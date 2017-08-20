@@ -1,0 +1,24 @@
+	<div class="content">
+		<!-- 瀑布流样式开始 -->
+		<div class="waterfull clearfloat" id="waterfull">
+			<ul>
+				{% if piclist|length == 0 %}
+					<b>没有找到您要的内容</b>
+				{% endif %}
+				{% for pic in piclist %}
+				<li class="item">
+					<a href="/pic?item={{pic}}" class="a-img" target="_blank">
+						<img src="{{pic}}" alt="">
+					</a>
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+		<!-- loading按钮自己通过样式调整 -->
+		<div id="imloading" style="width:200px;height:30px;line-height:30px;font-size:16px;text-align:center;border-radius:3px;opacity:0.7;background:#000;margin:10px auto 30px;color:#fff;display:none">
+		加载中,请用力刷新.....
+		</div>
+	</div>
+	</section>
+</body>
+</html>

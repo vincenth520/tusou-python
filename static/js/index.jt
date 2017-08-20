@@ -1,0 +1,179 @@
+$(function() {
+
+	$("#searchdiv").mouseover(function() {
+		//$("#serchbg").show();
+		$("#serchbg").css({
+			'background': 'black'
+		});
+	});
+
+	$("#searchdiv").mouseout(function() {
+		$("#serchbg").css({
+			'background': 'none'
+		});
+	});
+
+	$("#searchbt").click(function(){
+		var val = $.trim($("#search").val());
+		if(val == ''){
+			alert('请输入搜索内容！');
+			$("#search").focus();
+			return false;
+		}
+		$('#searchdiv a').attr('href','/search/'+val);
+	})
+
+	document.onkeydown=function(event){
+        var e = event || window.event || arguments.callee.caller.arguments[0];
+                
+        if(e && e.keyCode==13){ // enter 键
+             $("#searchbt").click();
+        }
+    }; 
+})
+
+$(function(){
+				document.old_list = new Array();
+				document.search = $("#this_search").val();
+				for (var i = $(".a-img img").length - 1; i >= 0; i--) {
+					$(".a-img")[i].href = '/pic?item=' + escape($(".a-img img")[i].src);
+					document.old_list.push($(".a-img img")[i].src);
+				};
+				//console.log(document.old_list);
+				PICSRC = $("#getsrc").val();
+				/*瀑布流开始*/
+				var container = $('.waterfull ul');
+				var loading=$('#imloading');
+				// 初始化loading状态
+				loading.data("on",true);
+				/*判断瀑布流最大布局宽度，最大为1280*/
+				function tores(){
+					var tmpWid=$(window).width();
+					if(tmpWid>1280){
+						tmpWid=1280;
+					}else{
+						var column=Math.floor(tmpWid/320);
+						tmpWid=column*320;
+					}
+					$('.waterfull').width(tmpWid);
+				}
+				tores();
+				$(window).resize(function(){
+					tores();
+				});
+				container.imagesLoaded(function(){
+				  container.masonry({
+				  	columnWidth: 320,
+				    itemSelector : '.item',
+				    isFitWidth: true,//是否根据浏览器窗口大小自动适应默认false
+				    isAnimated: true,//是否采用jquery动画进行重拍版
+				    isRTL:false,//设置布局的排列方式，即：定位砖块时，是从左向右排列还是从右向左排列。默认值为false，即从左向右
+				    isResizable: true,//是否自动布局默认true
+				    animationOptions: {
+						duration: 800,
+						easing: 'easeInOutBack',//如果你引用了jQeasing这里就可以添加对应的动态动画效果，如果没引用删除这行，默认是匀速变化
+						queue: false//是否队列，从一点填充瀑布流
+					}
+				  });
+				});
+				/*模拟从后台获取到的数据*/
+				$.getJSON(PICSRC, function(sqlJson) {
+					document.sqlJson = sqlJson;
+				});
+				/*本应该通过ajax从后台请求过来类似sqljson的数据然后，便利，进行填充，这里我们用sqlJson来模拟一下数据*/
+				$(window).scroll(function(){
+					if(!loading.data("on")) return;
+					// 计算所有瀑布流块中距离顶部最大，进而在滚动条滚动时，来进行ajax请求，方法很多这里只列举最简单一种，最易理解一种
+					var itemNum=$('#waterfull').find('.item').length;
+					var itemArr=[];
+					itemArr[0]=$('#waterfull').find('.item').eq(itemNum-1).offset().top+$('#waterfull').find('.item').eq(itemNum-1)[0].offsetHeight;
+					itemArr[1]=$('#waterfull').find('.item').eq(itemNum-2).offset().top+$('#waterfull').find('.item').eq(itemNum-1)[0].offsetHeight;
+					itemArr[2]=$('#waterfull').find('.item').eq(itemNum-3).offset().top+$('#waterfull').find('.item').eq(itemNum-1)[0].offsetHeight;
+					var maxTop=Math.max.apply(null,itemArr) - 100;
+					if(maxTop<$(window).height()+$(document).scrollTop()){
+						//加载更多数据
+						loading.data("on",false).fadeIn(800);
+
+						/*模拟从后台获取到的数据*/
+						$.getJSON(PICSRC, function(sqlJson) {
+							document.sqlJson = sqlJson;
+							//$.getJSON('/shell'+PICSRC, function() {});
+						});
+						/*if (document.sqlJson.length == 0) {
+							$.getJSON('/shell'+PICSRC, function() {});
+							loading.text('已经在努力加载了！');
+							return;
+						};*/
+						picnum = 0;
+						(function(sqlJson){
+								var html="";
+								$.each(sqlJson,function(index, el) {
+									console.log(index);
+									el = el.replace(document.search,encodeURIComponent(document.search));
+									//el = GB2312UnicodeConverter.ToUnicode(el);
+									//console.log(el);
+									if (document.old_list.indexOf(el) == '-1') {
+										picnum = picnum + 1;
+											//alert(picnum);
+										console.log(picnum);
+										if (picnum == 20) {
+											//alert(picnum);
+											return false;
+										};
+										document.old_list.push(el);
+										html+="<li class='item'><a href='/pic?item="+escape(el)+"' class='a-img'  target='_blank'><img src='"+el+"'></a></li>";											
+									};
+								});
+/*
+								if (picnum == 0) {/*
+									$.getJSON('/shell'+PICSRC, function() {});
+									loading.text('已经在努力加载了！');
+									sleep(5000);
+									$.getJSON(PICSRC, function(sqlJson) {
+										document.sqlJson = sqlJson;
+										//$.getJSON('/shell'+PICSRC, function() {});
+									});
+								};*/
+								
+								/*模拟ajax请求数据时延时800毫秒*/
+								var time=setTimeout(function(){
+									$(html).find('img').each(function(index){
+										loadImage($(this).attr('src'));
+									})
+									var $newElems = $(html).css({ opacity: 0}).appendTo(container);
+									$newElems.imagesLoaded(function(){
+										$newElems.animate({ opacity: 1},800);
+										container.masonry( 'appended', $newElems,true);
+										loading.data("on",true).fadeOut();
+										clearTimeout(time);
+							        });
+								},800)
+						})(document.sqlJson);
+					}
+				});
+				function loadImage(url) {
+				     var img = new Image(); 
+				     //创建一个Image对象，实现图片的预下载
+				      img.src = url;
+				      if (img.complete) {
+				         return img.src;
+				      }
+				      img.onload = function () {
+				       	return img.src;
+				      };
+				 };
+				 loadImage('/static/tmp/001459859916487c47ef6aab0dc4abea0ff8c77f6fadd3c000.jpg');
+				/*item hover效果*/
+				var rbgB=['#71D3F5','#F0C179','#F28386','#8BD38B'];
+				$('#waterfull').on('mouseover','.item',function(){
+					var random=Math.floor(Math.random() * 4);
+					$(this).stop(true).animate({'backgroundColor':rbgB[random]},1000);
+				});
+				$('#waterfull').on('mouseout','.item',function(){
+					$(this).stop(true).animate({'backgroundColor':'#fff'},1000);
+				});
+		})
+
+function sleep(d){
+  for(var t = Date.now();Date.now() - t <= d;);
+}

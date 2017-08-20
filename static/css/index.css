@@ -1,0 +1,26 @@
+*{padding: 0;margin: 0;}
+#header{width:100%;height: 250px;background: url('/static/img/bg.jpg');vertical-align: center;}
+#headermain{width: 90%;margin: 0 auto;}
+#logo{width:100px;float: left;font-size: 25px;font-weight: bold;line-height: 45px;color:#555;text-align: center;}
+#logo:hover{color: #fff;}
+#searchdiv{width: 500px;height: 30px;position: relative;margin:0 auto;border: 1px solid #fff;padding:5px;overflow: hidden;}
+#search{background: none;outline: none;width: 470px;height: 30px;font-size: 16px;z-index: 1000;color:#136397;position:absolute;border: none}
+#serchbg{position: absolute;width: 600px;height: 60px;padding:5px;border: 1px solid #fff;opacity: 0.1;z-index: 1;top: -10px;left: -10px;}
+#searchbt{right:5px;cursor: pointer;position: absolute;z-index: 1111;outline: none;}
+#hotsearch{margin: 10px auto;text-align: center;font-size: 15px;}
+#hotsearch a{color: #B33B0C}
+.recommend-line, .get-more-line {position: relative;padding: 20px 0;text-align: center;font-size: 16px;color: #555}
+.recommend-line:before, .recommend-line:after, .get-more-line:before, .get-more-line:after {display: block;position: absolute;top: 28px;width: 44%;content: "";border-top: 1px solid #ccc;}
+.recommend-line:after, .get-more-line:after {right: 0;}
+
+
+#main{width: 800px;margin: 0 auto;margin-top: 20px;}
+#picheadermain{width: 800px;margin: 0 auto;}
+#picheadermain #logo{margin-left: 20px;}
+#left{width: 600px;background: #fff;float: left;}
+#left img{max-width: 550px;margin: 30px;}
+#right{width:180px;float: right;}
+#right a{padding: 5px 10px;background: #30C7F0;margin: 2px;display: inline-block;text-decoration: none;color: #fff;font-size: 14px;}
+#right a:hover{background: #610D0D}
+#download{clear: both;display: block;margin:0px 0px 10px 30px;}
+footer{clear: both;text-align: center;line-height: 80px;}

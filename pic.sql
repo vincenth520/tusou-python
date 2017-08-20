@@ -1,0 +1,1 @@
+create table search(id INTEGER PRIMARY KEY,name varchar(20),click int);

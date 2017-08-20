@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>{{pic}}</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link href="/static/css/index.css" rel="stylesheet" type="text/css">
+<script src='/static/js/jquery.js'></script>
+<script src='/static/js/index.jt'></script>
+</head>
+<body style="background: url('/static/img/bg.jpg');">
+	<header id="header" style="height:45px;padding:5px 0px;">
+		<div id="picheadermain">
+			<a href="/"><div id="logo" style="text-align:left">TUSO</div></a>
+			<input type="hidden" id="getsrc" value='/api/search/{{s}}'>
+			<input type="hidden" id="this_search" value="{{s}}">
+			<div id="searchdiv" style="margin:0">
+				<input type="text" placeholder="{{rand[0].name}}" name='search' id='search' autocomplete="off">
+				<a href=""><input type="image" src="/static/img/search.png" id="searchbt"></a>
+				<div id="serchbg"></div>
+			</div>
+		</div>
+	</header>
+
+	<section id="main">
+		<div id="left">
+			<img src="{{pic}}" alt="">  
+		</div>  
+		<div id="right">
+			{% for s in hot %}
+				<a href="/search/{{s.name}}">{{s.name}}</a>
+			{% endfor %}
+		</div>
+	</section>
+
+
+	<footer>
+		<div id="copyright">
+
+                <span>Copyright © 2016 <a href="http://codems.cn" target="_blank">CodeMS</a>. All Rights Reserved.  版权所有</span>
+
+            </div>
+	</footer>
